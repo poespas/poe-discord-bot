@@ -1,0 +1,10 @@
+{
+    "discord": {
+        "token": ""
+    },
+    "twitch": {
+        "username": "",
+        "password": "",
+        "channels": [ "jerma985" ]
+    }
+}
