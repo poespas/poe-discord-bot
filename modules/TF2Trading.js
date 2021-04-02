@@ -17,7 +17,11 @@ const TF2Trading = {
 
         const profit = getProfit(config);
         const keyProfit = (profit / config.key_price);
+        
+        let used = 3;
+        
         msg.channel.send(`Profit in the last 30 days is: ${(profit / 9).toFixed(2)} refined, that is about ${(keyProfit * 2).toFixed(2)} MvM tickets, thats enough for ${(keyProfit * 2).toFixed(2)} (${(keyProfit * 2).toFixed(2)}) players!`);
+        msg.channel.send(`Now, we've already used ${used} tickets, so that's ${((keyProfit * 2).toFixed(2)} (${(keyProfit * 2).toFixed(2)) - used } remaining!`);
     },
     OnMessageTrades: async (msg) => {
         const messageText = msg.content;
