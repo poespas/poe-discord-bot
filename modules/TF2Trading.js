@@ -82,10 +82,13 @@ function getProfit(config) {
     return totalProfit;
 }
 
-function findParameterValue(arguments, searchingFor, returnType = "number"){
+function findParameterValue(arguments, searchingFor, returnType = "number") {
 
-    if (arguments.indexOf(searchingFor) >= 0){
-        if (arguments[arguments.indexOf(searchingFor) + 1]) value = arguments[arguments.indexOf(searchingFor) + 1]; else return null;
+    let value = 0;
+
+    if (arguments.indexOf(searchingFor) >= 0) {
+        let index = arguments.indexOf(searchingFor) + 1;
+        if (arguments[index]) value = arguments[index]; else return null;
         
         if (returnType == "number" && !isNaN(parseInt(value))) return parseInt(value);
         if (returnType == "string") return value;
