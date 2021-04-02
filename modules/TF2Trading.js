@@ -83,15 +83,15 @@ function getProfit(config) {
 }
 
 function findParameterValue(arguments, searchingFor, returnType = "number"){
-    result = null;
+
     if (arguments.indexOf(searchingFor) >= 0){
-        value = arguments[arguments.indexOf(searchingFor) + 1];
+        if (arguments[arguments.indexOf(searchingFor) + 1]) value = arguments[arguments.indexOf(searchingFor) + 1]; else return null;
         
-        if (returnType == "number" && !isNaN(parseInt(value))) result = parseInt(value);
-        if (returnType == "string" && value != null) result = value;
+        if (returnType == "number" && !isNaN(parseInt(value))) return parseInt(value);
+        if (returnType == "string" && value != null) return value;
     }
     
-    return result;
+    return null;
 }
 
 function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, searchFor = "") {
