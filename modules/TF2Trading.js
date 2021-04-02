@@ -1,4 +1,3 @@
-const { Console } = require("console");
 const fs = require("fs");
 
 let msgusers = {};
@@ -41,10 +40,10 @@ const TF2Trading = {
             return;
         }
 
-        const argument2 = findParameterValue(args, "filter");
-        const argument3 = findParameterValue(args, "page") ?? 1;
-        const argument4 = findParameterValue(args, "search", "string") ?? "";
-        const returnMessage = getRecentTrades(argument1, argument2, argument3, argument4);
+        const filter = findParameterValue(args, "filter");
+        const page = findParameterValue(args, "page") ?? 1;
+        const search = findParameterValue(args, "search", "string") ?? "";
+        const returnMessage = getRecentTrades(argument1, filter, page, search);
         if (returnMessage.length > 2000) {
             msg.channel.send(`Returned message is too big, try a smaller number`);
             return;
@@ -101,15 +100,15 @@ function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, 
     const tradesData = [];
     let maxNameSize = "Name".length;
     let maxPriceSize = "Price".length;
-    wentThrough = 0;
+    let wentThrough = 0;
     for (let i = 0; i < storageJson.length; i++) {
         const item = storageJson[i];
-        
+
         if (filterByIntent !== null && item.intent !== filterByIntent) {
             continue;
         }
 
-        if (!item.name.toLowerCase().includes(searchFor)) continue;
+        if (!item.name.toLowerCase().includes(searchFor.toLowerCase())) continue;
 
         wentThrough++;
         if (wentThrough < ((pageNumber * numberOfTrades) - numberOfTrades) + 1) continue;
@@ -143,7 +142,7 @@ function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, 
         returnString += `${stringPrice(item.price).padEnd(maxPriceSize)}|`;
         returnString += `${item.profit ?? ""}\n`;
     })
-    returnString += `page ${pageNumber} | filter: ${filterByIntent == null ? "none" : filterByIntent == 0 ? "buy" : "sell"} | search: ${searchFor == null || searchFor == "" ? "none" : searchFor}\n`;
+    returnString += `page ${pageNumber} ${filterByIntent == null ? "" : filterByIntent == 0 ? "| filter: buy " : "| filter: sell "}${searchFor == null || searchFor == "" ? "" : "| search: " + searchFor}\n`;
 
     return "```\n" + returnString + "```\n \🟦 = buy, \🟩 = sell";
 }
