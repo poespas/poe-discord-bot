@@ -88,7 +88,7 @@ function findParameterValue(arguments, searchingFor, returnType = "number"){
         if (arguments[arguments.indexOf(searchingFor) + 1]) value = arguments[arguments.indexOf(searchingFor) + 1]; else return null;
         
         if (returnType == "number" && !isNaN(parseInt(value))) return parseInt(value);
-        if (returnType == "string" && value != null) return value;
+        if (returnType == "string") return value;
     }
     
     return null;
