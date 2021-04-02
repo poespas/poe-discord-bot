@@ -100,7 +100,8 @@ function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, 
     const tradesData = [];
     let maxNameSize = "Name".length;
     let maxPriceSize = "Price".length;
-    let wentThrough = 0;
+    let skipped = 0;
+
     for (let i = 0; i < storageJson.length; i++) {
         const item = storageJson[i];
 
@@ -110,8 +111,8 @@ function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, 
 
         if (!item.name.toLowerCase().includes(searchFor.toLowerCase())) continue;
 
-        wentThrough++;
-        if (wentThrough < ((pageNumber * numberOfTrades) - numberOfTrades) + 1) continue;
+        skipped++; //pagination
+        if (skipped < ((pageNumber * numberOfTrades) - numberOfTrades) + 1) continue;
 
         if (numberOfTrades <= tradesData.length) {
             break;
