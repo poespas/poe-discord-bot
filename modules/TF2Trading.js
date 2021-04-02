@@ -30,12 +30,12 @@ const TF2Trading = {
             return;
         }
 
-        const argument1 = parseInt(args[0]);
-        if (isNaN(argument1)) {
+        const numberOfTrades = parseInt(args[0]);
+        if (isNaN(numberOfTrades)) {
             msg.channel.send(`Argument 1 must be of type number`);
             return;
         }
-        if (argument1 > storageJson.length) {
+        if (numberOfTrades > storageJson.length) {
             msg.channel.send(`Number is bigger than the total trades that are currently available, try a smaller number`);
             return;
         }
@@ -43,7 +43,7 @@ const TF2Trading = {
         const filter = findParameterValue(args, "filter");
         const page = findParameterValue(args, "page") ?? 1;
         const search = findParameterValue(args, "search", "string") ?? "";
-        const returnMessage = getRecentTrades(argument1, filter, page, search);
+        const returnMessage = getRecentTrades(numberOfTrades, filter, page, search);
         if (returnMessage.length > 2000) {
             msg.channel.send(`Returned message is too big, try a smaller number`);
             return;
