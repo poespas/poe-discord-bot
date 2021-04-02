@@ -1,3 +1,4 @@
+const { Console } = require("console");
 const fs = require("fs");
 
 let msgusers = {};
@@ -40,8 +41,10 @@ const TF2Trading = {
             return;
         }
 
-        const argument2 = args[1] ? parseInt(args[1]) : null;
-        const returnMessage = getRecentTrades(argument1, argument2);
+        const argument2 = findParameterValue(args, "filter");
+        const argument3 = findParameterValue(args, "page") ?? 1;
+        const argument4 = findParameterValue(args, "search", "string") ?? "";
+        const returnMessage = getRecentTrades(argument1, argument2, argument3, argument4);
         if (returnMessage.length > 2000) {
             msg.channel.send(`Returned message is too big, try a smaller number`);
             return;
@@ -80,18 +83,36 @@ function getProfit(config) {
     return totalProfit;
 }
 
-function getRecentTrades(numberOfTrades, filterByIntent = null) {
+function findParameterValue(arguments, searchingFor, returnType = "number"){
+    result = null;
+    if (arguments.indexOf(searchingFor) >= 0){
+        value = arguments[arguments.indexOf(searchingFor) + 1];
+        
+        if (returnType == "number" && !isNaN(parseInt(value))) result = parseInt(value);
+        if (returnType == "string" && value != null) result = value;
+    }
+    
+    return result;
+}
+
+function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, searchFor = "") {
     let storageJson = JSON.parse(fs.readFileSync("/tf2-bot/data/storage.json")).reverse();
 
     const tradesData = [];
     let maxNameSize = "Name".length;
     let maxPriceSize = "Price".length;
+    wentThrough = 0;
     for (let i = 0; i < storageJson.length; i++) {
         const item = storageJson[i];
-
+        
         if (filterByIntent !== null && item.intent !== filterByIntent) {
             continue;
         }
+
+        if (!item.name.toLowerCase().includes(searchFor)) continue;
+
+        wentThrough++;
+        if (wentThrough < ((pageNumber * numberOfTrades) - numberOfTrades) + 1) continue;
 
         if (numberOfTrades <= tradesData.length) {
             break;
@@ -122,6 +143,7 @@ function getRecentTrades(numberOfTrades, filterByIntent = null) {
         returnString += `${stringPrice(item.price).padEnd(maxPriceSize)}|`;
         returnString += `${item.profit ?? ""}\n`;
     })
+    returnString += `page ${pageNumber} | filter: ${filterByIntent == null ? "none" : filterByIntent == 0 ? "buy" : "sell"} | search: ${searchFor == null || searchFor == "" ? "none" : searchFor}\n`;
 
     return "```\n" + returnString + "```\n \🟦 = buy, \🟩 = sell";
 }
