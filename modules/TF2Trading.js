@@ -34,18 +34,20 @@ const TF2Trading = {
             return;
         }
 
-        const argument1 = parseInt(args[0]);
-        if (isNaN(argument1)) {
+        const numberOfTrades = parseInt(args[0]);
+        if (isNaN(numberOfTrades)) {
             msg.channel.send(`Argument 1 must be of type number`);
             return;
         }
-        if (argument1 > storageJson.length) {
+        if (numberOfTrades > storageJson.length) {
             msg.channel.send(`Number is bigger than the total trades that are currently available, try a smaller number`);
             return;
         }
 
-        const argument2 = args[1] ? parseInt(args[1]) : null;
-        const returnMessage = getRecentTrades(argument1, argument2);
+        const filter = findParameterValue(args, "filter");
+        const page = findParameterValue(args, "page") ?? 1;
+        const search = findParameterValue(args, "search", "string") ?? "";
+        const returnMessage = getRecentTrades(numberOfTrades, filter, page, search);
         if (returnMessage.length > 2000) {
             msg.channel.send(`Returned message is too big, try a smaller number`);
             return;
@@ -84,18 +86,40 @@ function getProfit(config) {
     return totalProfit;
 }
 
-function getRecentTrades(numberOfTrades, filterByIntent = null) {
+function findParameterValue(arguments, searchingFor, returnType = "number") {
+
+    let value = 0;
+
+    if (arguments.indexOf(searchingFor) >= 0) {
+        let index = arguments.indexOf(searchingFor) + 1;
+        if (arguments[index]) value = arguments[index]; else return null;
+        
+        if (returnType == "number" && !isNaN(parseInt(value))) return parseInt(value);
+        if (returnType == "string") return value;
+    }
+    
+    return null;
+}
+
+function getRecentTrades(numberOfTrades, filterByIntent = null, pageNumber = 1, searchFor = "") {
     let storageJson = JSON.parse(fs.readFileSync("/tf2-bot/data/storage.json")).reverse();
 
     const tradesData = [];
     let maxNameSize = "Name".length;
     let maxPriceSize = "Price".length;
+    let skipped = 0;
+
     for (let i = 0; i < storageJson.length; i++) {
         const item = storageJson[i];
 
         if (filterByIntent !== null && item.intent !== filterByIntent) {
             continue;
         }
+
+        if (!item.name.toLowerCase().includes(searchFor.toLowerCase())) continue;
+
+        skipped++; //pagination
+        if (skipped < ((pageNumber * numberOfTrades) - numberOfTrades) + 1) continue;
 
         if (numberOfTrades <= tradesData.length) {
             break;
@@ -126,6 +150,7 @@ function getRecentTrades(numberOfTrades, filterByIntent = null) {
         returnString += `${stringPrice(item.price).padEnd(maxPriceSize)}|`;
         returnString += `${item.profit ?? ""}\n`;
     })
+    returnString += `page ${pageNumber} ${filterByIntent == null ? "" : filterByIntent == 0 ? "| filter: buy " : "| filter: sell "}${searchFor == null || searchFor == "" ? "" : "| search: " + searchFor}\n`;
 
     return "```\n" + returnString + "```\n \🟦 = buy, \🟩 = sell";
 }
