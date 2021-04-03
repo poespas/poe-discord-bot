@@ -21,7 +21,7 @@ const TF2Trading = {
         let used = 3;
         
         msg.channel.send(`Profit in the last 30 days is: ${(profit / 9).toFixed(2)} refined, that is about ${(keyProfit * 2).toFixed(2)} MvM tickets, thats enough for ${(keyProfit * 2).toFixed(2)} (${(keyProfit * 2).toFixed(2)}) players!`);
-        msg.channel.send(`Now, we've already used ${used} tickets, so that's ${((keyProfit * 2).toFixed(2)} (${(keyProfit * 2).toFixed(2)) - used } remaining!`);
+        msg.channel.send(`Now, we've already used ${used} tickets, so that's ${((keyProfit * 2).toFixed(2)) - used} remaining!`);
     },
     OnMessageTrades: async (msg) => {
         const messageText = msg.content;
@@ -87,12 +87,16 @@ function getProfit(config) {
 }
 
 function findParameterValue(arguments, searchingFor, returnType = "number") {
-
     let value = 0;
 
     if (arguments.indexOf(searchingFor) >= 0) {
         let index = arguments.indexOf(searchingFor) + 1;
-        if (arguments[index]) value = arguments[index]; else return null;
+        if (arguments[index]) {
+            value = arguments[index];
+        }
+        else {
+            return null;
+        }
         
         if (returnType == "number" && !isNaN(parseInt(value))) return parseInt(value);
         if (returnType == "string") return value;
