@@ -12,7 +12,7 @@ const twitch = new tmi.Client({
 		"username": config.twitch.username,
         "password": config.twitch.password
 	},
-	channels: config.twitch.channelsw
+	channels: config.twitch.channels
 });
 
 let listening = false;
