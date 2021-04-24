@@ -12,7 +12,8 @@ const Modules = {
     PingMe: require("./modules/PingMe"),
     Sawdust: require("./modules/Sawdust"),
     TextTransformation: require("./modules/TextTransformation"),
-    TF2Trading: require("./modules/TF2Trading")
+    TF2Trading: require("./modules/TF2Trading"),
+    Surveys: require("./modules/Surveys")
 };
 
 if (!fs.existsSync("./data.json")) {

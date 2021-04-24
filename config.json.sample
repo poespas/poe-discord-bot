@@ -6,5 +6,11 @@
         "username": "",
         "password": "",
         "channels": [ "jerma985" ]
+    },
+    "database": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": ""
     }
 }
