@@ -47,7 +47,8 @@ async function takeScreenshot(userID, toFile) {
         delay: 7,
         width: 3840,
         height: 2160,
-        element: ".activity-grid table"
+        element: ".activity-grid table",
+	waitForElement: ".avatar:not([src=''])"
     });
 }
 
